@@ -1,5 +1,3 @@
-// Before <Windows.h>: it includes CommonLibF4's RE headers.
-#include <RPS/Runtime/RequiredUpdate.h>
 #include <F4SE/F4SE.h>
 #include <REL/Relocation.h>
 #include <Windows.h>
@@ -94,10 +92,10 @@ namespace {
         }
     }
 
-    // A loaded ROCK that does not serve the API this add-on was built for stops
-    // the game at the main menu (RPS/Runtime/RequiredUpdate.h); a missing ROCK
-    // does not. The add-on requests the exact versions its ROCK headers
-    // declare, so every version refusal is a real mismatch.
+    // A loaded ROCK that does not serve the API this add-on was built for is
+    // logged and leaves decoration off, as a missing ROCK does. The add-on
+    // requests the exact versions its ROCK headers declare, so every version
+    // refusal is a real mismatch.
     bool isVersionRefusal(const rock::api::Status status) {
         using rock::api::Status;
         return status==Status::UnknownInterface || status==Status::UnsupportedMajor || status==Status::UnsupportedMinor ||
@@ -105,16 +103,12 @@ namespace {
     }
 
     void reportRockMismatch(const char* reason) {
-        pluginLog->critical("ROCK Pimp my House does not work with the loaded ROCK ({}): the game stops at the main menu until they match",reason);
-        RPS::Runtime::RequiredUpdate::report(L"ROCK Pimp my House does not work with the installed ROCK: they were "
-            L"built for different ROCK versions. Install matching versions of ROCK and ROCK Pimp my House.");
+        pluginLog->error("ROCK Pimp my House does not work with the loaded ROCK ({}): they were built for different ROCK versions; decoration stays off until they match",reason);
     }
 
     void connect() {
         using rock::api::Status;
         if (client.owner()) return;
-        if (!RPS::Runtime::RequiredUpdate::watchMainMenu(L"ROCK Pimp my House: update required"))
-            pluginLog->error("The UI is unavailable; a ROCK version mismatch cannot stop the game at the main menu");
         const auto module=GetModuleHandleA("ROCK.dll");
         if (!module) { pluginLog->error("ROCK.dll is not loaded; decoration stays off"); return; }
         const auto query=reinterpret_cast<rock::api::QueryInterfaceV1>(GetProcAddress(module,rock::api::kQueryExportName));
