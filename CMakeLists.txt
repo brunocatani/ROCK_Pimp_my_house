@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.2)
-project(ROCK_Pimp_my_house VERSION 1.0.0 LANGUAGES CXX RC)
+project(ROCK_Pimp_my_house VERSION 1.0.1 LANGUAGES CXX RC)
 get_filename_component(WORKSPACE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../.." ABSOLUTE)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(F4SE_SUPPORT_XBYAK ON CACHE BOOL "" FORCE)
